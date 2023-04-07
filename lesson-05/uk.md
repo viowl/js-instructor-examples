@@ -87,7 +87,13 @@ const account = {
    * Метод створює та повертає об'єкт транзакції.
    * Приймає суму та тип транзакції.
    */
-  createTransaction(amount, type) {},
+  createTransaction(amount, type) {
+    return {
+      amount,
+      type,
+      id: this.transactions.length,
+    }
+  },
 
   /*
    * Метод, що відповідає за додавання суми до балансу.
@@ -95,7 +101,11 @@ const account = {
    * Викликає createTransaction для створення об'єкта транзакції
    * після чого додає його до історії транзакцій
    */
-  deposit(amount) {},
+  deposit(amount) {
+    this.balance += amount;
+    const transaction = this.createTransaction(amount, Transaction.DEPOSIT);
+    this.transactions.push(transaction);
+  },
 
   /*
    * Метод, що відповідає за зняття суми з балансу.
@@ -106,22 +116,46 @@ const account = {
    * Якщо amount більше ніж поточний баланс, виводь повідомлення
    * про те, що зняття такої суми не можливе, недостатньо коштів.
    */
-  withdraw(amount) {},
+  withdraw(amount) {
+    if (amount > this.balance) {
+      console.error("Не достаточно средств!");
+      return;
+    }
+    this.balance -= amount;
+    const transaction = this.createTransaction(amount, Transaction.WITHDRAW);
+    this.transactions.push(transaction);
+  },
 
   /*
    * Метод повертає поточний баланс
    */
-  getBalance() {},
+  getBalance() {
+    return.this.balance
+  },
 
   /*
    * Метод шукає та повертає об'єкт транзакції по id
    */
-  getTransactionDetails(id) {},
+  getTransactionDetails(id) {
+    for (const transaction of this.transactions) {
+      if (id === transaction.id) {
+        return transaction;
+      }
+    }
+  },
 
   /*
    * Метод повертає кількість коштів
    * певного типу транзакції з усієї історії транзакцій
    */
-  getTransactionTotal(type) {},
+  getTransactionTotal(type) {
+    let total = 0;
+    for (const transaction of this.transactions) {
+      if (type === transaction.type) {
+        total += transaction.amount;
+      }
+    }
+    return total;
+  },
 };
 ```
